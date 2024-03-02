@@ -1,3 +1,7 @@
+// MainActivity.kt
+
+package ua.edu.lntu.cw4
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -70,6 +74,13 @@ fun navigateToNewScreen(context: Context, item: String) {
     context.startActivity(intent)
 }
 
+@Preview(showBackground = true)
+@Composable
+fun ListScreenPreview() {
+    IPZ_CR_4Theme {
+        ListScreen()
+    }
+}
 class NewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,8 +109,27 @@ class NewActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun ListScreenPreview() {
+fun NewActivityPreview() {
     IPZ_CR_4Theme {
-        ListScreen()
+        NewActivityContent()
+    }
+}
+
+@Composable
+fun NewActivityContent() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Ви на новому екрані",
+                fontSize = 24.sp,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 }
