@@ -1,8 +1,10 @@
 package ua.edu.lntu.cw4
 
+import androidx.compose.foundation.layout.Arrangement
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -43,19 +45,22 @@ fun ListScreen() {
         verticalArrangement = Arrangement.spacedBy(16.dp) // Встановлюємо відступ між елементами
     ) {
         items(data) { item ->
-            ListItem(text = item)
+            ListItem(text = item, onItemClick = { /* Обробник натискання */ })
         }
     }
 }
 
 @Composable
-fun ListItem(text: String) {
+fun ListItem(text: String, onItemClick: () -> Unit) {
     Text(
         text = text,
         fontSize = 28.sp, // Розмір шрифту 28
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp) // Змінюємо відступи
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onItemClick() } // Додавання обробника натискань
     )
 }
+
 
 
 @Preview(showBackground = true)
