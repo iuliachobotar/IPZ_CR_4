@@ -1,9 +1,5 @@
-// MainActivity.kt
-
 package ua.edu.lntu.cw4
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,12 +11,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.window.DialogProperties
 import ua.edu.lntu.cw4.ui.theme.IPZ_CR_4Theme
 
 class MainActivity : ComponentActivity() {
@@ -45,14 +49,21 @@ class MainActivity : ComponentActivity() {
 fun ListScreen() {
     val data = listOf("Елемент 1", "Елемент 2", "Елемент 3", "Елемент 4", "Елемент 5")
     val context = LocalContext.current
+    var selectedItem by remember { mutableStateOf<String?>(null) }
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(data) { item ->
             ListItem(text = item) {
-                navigateToNewScreen(context as ComponentActivity, item)
+                selectedItem = item
             }
+        }
+    }
+
+    selectedItem?.let { item ->
+        DisplaySelectedItemDialog(selectedItem = item) {
+            selectedItem = null
         }
     }
 }
@@ -68,68 +79,41 @@ fun ListItem(text: String, onItemClick: () -> Unit) {
     )
 }
 
-fun navigateToNewScreen(context: Context, item: String) {
-    val intent = Intent(context, NewActivity::class.java)
-    intent.putExtra("selected_item", item)
-    context.startActivity(intent)
+@Composable
+fun DisplaySelectedItemDialog(selectedItem: String, onClose: () -> Unit) {
+    Dialog(
+        onDismissRequest = { onClose() },
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.White // Змініть на колір, який вам потрібен
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Вибраний елемент: $selectedItem",
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
 }
+
+
+
 
 @Preview(showBackground = true)
 @Composable
 fun ListScreenPreview() {
     IPZ_CR_4Theme {
         ListScreen()
-    }
-}
-class NewActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val selectedItem = intent.getStringExtra("selected_item") ?: "Невідомо"
-        setContent {
-            IPZ_CR_4Theme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Ви на новому екрані\nВибраний елемент: $selectedItem",
-                            fontSize = 24.sp,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NewActivityPreview() {
-    IPZ_CR_4Theme {
-        NewActivityContent()
-    }
-}
-
-@Composable
-fun NewActivityContent() {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Ви на новому екрані",
-                fontSize = 24.sp,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
     }
 }
